@@ -1,0 +1,17 @@
+image,object_id,object_type,gt_width_mm,gt_height_mm,pred_width_mm,pred_height_mm
+test.jpg,1,card,85.6,53.98,85.4,54.20
+test.jpg,2,coin,24.5,24.5,24.10,24.30
+test.jpg,3,coin,24.5,24.5,23.90,24.80
+test2.jpg,1,card,85.6,53.98,85.80,53.50
+test2.jpg,2,book,148.0,210.0,147.20,209.10
+test2.jpg,3,coin,24.5,24.5,24.60,24.20
+test3.jpg,1,card,85.6,53.98,86.10,53.40
+test3.jpg,2,a4,210.0,297.0,208.50,295.20
+test3.jpg,3,book,148.0,210.0,149.30,211.50
+a.jpg,1,card,85.6,53.98,85.20,54.30
+a.jpg,2,coin,24.5,24.5,24.90,23.80
+a.jpg,3,book,148.0,210.0,146.80,208.20
+test_bad1.jpg,1,card,85.6,53.98,82.10,56.40
+test_bad1.jpg,2,coin,24.5,24.5,21.30,27.10
+test_bad2.jpg,1,card,85.6,53.98,89.20,51.10
+test_bad2.jpg,2,book,148.0,210.0,154.10,202.30

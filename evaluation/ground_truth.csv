@@ -1,0 +1,5 @@
+image,object_id,object_type,gt_width_mm,gt_height_mm
+test.jpg,1,card,85.6,53.98
+test.jpg,2,coin,24.5,24.5
+test2.jpg,1,card,85.6,53.98
+test2.jpg,2,book,148.0,210.0
