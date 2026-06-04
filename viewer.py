@@ -15,6 +15,11 @@ from modules.preprocess import (
     preprocess
 )
 
+from modules.denoise import (
+    denoise as denoise_image,
+    METHODS as DENOISE_METHODS,
+)
+
 from modules.noise_filter import (
     remove_small_noise
 )
@@ -91,12 +96,43 @@ REFERENCE_OBJECTS = {
 
         "ratio": 148.0 / 68.0
     },
+
+    # 한국 동전 (원형 → ratio = 1.0, width_mm = 지름)
+    "coin_10": {
+
+        "width_mm": 18.0,
+
+        "ratio": 1.0
+    },
+
+    "coin_50": {
+
+        "width_mm": 21.6,
+
+        "ratio": 1.0
+    },
+
+    "coin_100": {
+
+        "width_mm": 24.0,
+
+        "ratio": 1.0
+    },
+
+    "coin_500": {
+
+        "width_mm": 26.5,
+
+        "ratio": 1.0
+    },
 }
 
 
 STAGES = [
 
     "Original",
+
+    "Denoised",
 
     "Adaptive",
 
@@ -279,7 +315,7 @@ def find_reference_box_with_yolo(
 # -------------------------------------------------
 # OpenCV pipeline
 # -------------------------------------------------
-def run_pipeline(image_path):
+def run_pipeline(image_path, denoise_method="auto"):
 
     image, scale = load_image(
         image_path
@@ -289,7 +325,12 @@ def run_pipeline(image_path):
 
         return None
 
-    adaptive = preprocess(image)
+    denoised, denoise_info = denoise_image(
+        image,
+        method=denoise_method,
+    )
+
+    adaptive = preprocess(denoised)
 
     filtered = remove_small_noise(
 
@@ -335,7 +376,7 @@ def run_pipeline(image_path):
     )
 
     yolo_detections = yolo_detect_objects(
-        image
+        denoised
     )
 
     return {
@@ -348,9 +389,13 @@ def run_pipeline(image_path):
 
         "yolo_detections": yolo_detections,
 
+        "denoise_info": denoise_info,
+
         "stage_images": {
 
             "Original": image,
+
+            "Denoised": denoised,
 
             "Adaptive": adaptive,
 
@@ -787,6 +832,10 @@ class ViewerApp:
             value="auto"
         )
 
+        self.denoise_var = tk.StringVar(
+            value="auto"
+        )
+
         self.K = load_camera_matrix(
             "camparams.mat"
         )
@@ -1115,8 +1164,56 @@ class ViewerApp:
 
             "bill_10000",
 
+            "coin_10",
+
+            "coin_50",
+
+            "coin_100",
+
+            "coin_500",
+
             command=lambda _v:
             self._remeasure()
+        ).pack(
+
+            fill=tk.X,
+
+            padx=14,
+
+            pady=(2, 8)
+        )
+
+        # 노이즈 제거
+        tk.Label(
+
+            sidebar,
+
+            text="Denoise",
+
+            bg=self.SIDEBAR_BG,
+
+            fg="#cccccc",
+
+            font=("Segoe UI", 9),
+        ).pack(
+
+            anchor="w",
+
+            padx=14,
+
+            pady=(6, 0)
+        )
+
+        tk.OptionMenu(
+
+            sidebar,
+
+            self.denoise_var,
+
+            *DENOISE_METHODS,
+
+            command=lambda _v:
+            self._reload_with_denoise()
         ).pack(
 
             fill=tk.X,
@@ -1299,6 +1396,11 @@ class ViewerApp:
 
             self._load(path)
 
+    def _reload_with_denoise(self):
+        """노이즈 제거 방식이 바뀌면 파이프라인 전체를 다시 실행."""
+        if self.current_path:
+            self._load(self.current_path)
+
     def _load(self, path):
 
         self.status.config(
@@ -1308,7 +1410,7 @@ class ViewerApp:
 
         self.root.update_idletasks()
 
-        det = run_pipeline(path)
+        det = run_pipeline(path, denoise_method=self.denoise_var.get())
 
         if det is None:
 
