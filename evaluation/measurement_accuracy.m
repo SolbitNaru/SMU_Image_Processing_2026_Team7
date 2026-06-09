@@ -18,7 +18,7 @@
 clear; clc; close all;
 
 % 1. 데이터 로드
-csv_path = 'sample_results.csv';   % 실제 결과 파일로 교체
+csv_path = 'evaluation/results.csv';   % 실제 결과 파일로 교체
 T = readtable(csv_path);
 fprintf('총 %d개 객체 평가 (%d개 이미지)\n', ...
     height(T), numel(unique(T.image)));
