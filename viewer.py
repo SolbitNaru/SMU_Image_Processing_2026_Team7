@@ -409,7 +409,7 @@ def run_pipeline(image_path, denoise_method="auto"):
 
 
 # -------------------------------------------------
-# 카드 기준 측정
+# 기준 객체 비교 측정
 # -------------------------------------------------
 def measure_with_card(
 
@@ -982,7 +982,7 @@ class ViewerApp:
 
         for label, value in [
 
-            ("카드 기준", "card"),
+            ("기준 객체 비교", "card"),
 
             ("거리 기반", "distance"),
 
@@ -1654,7 +1654,7 @@ class ViewerApp:
 
         mode_text = {
 
-            "card": "카드 기준",
+            "card": "기준 객체 비교",
 
             "distance": "거리 기반",
 
